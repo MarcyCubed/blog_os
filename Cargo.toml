@@ -6,12 +6,6 @@ edition = "2024"
 [dependencies]
 bootloader = "0.9"
 
-[profile.dev]
-panic = "abort"
-
-[profile.release]
-panic = "abort"
-
 [[bin]]
 name = "blog_os"
 test = false
