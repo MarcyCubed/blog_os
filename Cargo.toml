@@ -7,6 +7,8 @@ edition = "2024"
 bootloader = "0.9"
 volatile = "0.2.6"
 spin = "0.5.2"
+x86_64 = "0.14.2"
+uart_16550 = "0.2.0"
 
 [dependencies.lazy_static]
 version = "1.0"
@@ -14,5 +16,19 @@ features = ["spin_no_std"]
 
 [[bin]]
 name = "blog_os"
-test = false
+test = true
 bench = false
+
+[package.metadata.bootimage]
+# isa-debug-exit and serial to handle testing
+test-args = [    "-device","isa-debug-exit,iobase=0xf4,iosize=0x04",    # This device exits QEMU. We use it for tests
+                 "-serial", "stdio",    # Serial port to pass data from QEMU to cargo test
+                 "-display", "none" ]   # Don't show the QEMU window while testing
+test-success-exit-code = 33     # Exit code QEMU returns when tests execute successfully
+test-timeout = 300      # Timeout in seconds until it reports tests that were stuck in a loop failed.
+
+# should_panic runs directly from _start.
+# It has a single test, so it doesn't need a test harness.
+[[test]]
+name = "should_panic"
+harness = false
