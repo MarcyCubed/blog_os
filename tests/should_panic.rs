@@ -1,10 +1,9 @@
 #![no_std]
 #![no_main]
 
-use core::panic::PanicInfo;
-use blog_os::{QemuExitCode, exit_qemu, serial_println};
 use blog_os::serial_print;
-
+use blog_os::{QemuExitCode, exit_qemu, serial_println};
+use core::panic::PanicInfo;
 
 #[unsafe(no_mangle)]
 pub extern "C" fn _start() -> ! {
@@ -12,7 +11,7 @@ pub extern "C" fn _start() -> ! {
     should_fail();
     serial_println!("[test did not panic]");
     exit_qemu(QemuExitCode::Failed);
-    loop{}
+    loop {}
 }
 
 // The panic handler only runs 1 test successfully before exiting, so we can have only one test case.
