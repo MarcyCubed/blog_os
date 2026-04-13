@@ -52,7 +52,8 @@ pub fn test_panic_handler(info: &PanicInfo) -> ! {
 #[cfg(test)]
 #[unsafe(no_mangle)]
 pub extern "C" fn _start() -> ! {
-    test_main();
+    init(); // Initialize the OS
+    test_main(); // Run the tests instead of the normal OS
     loop {}
 }
 
