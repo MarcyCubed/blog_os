@@ -12,7 +12,7 @@ use core::panic::PanicInfo;
 #[cfg(not(test))]
 fn panic(info: &PanicInfo) -> ! {
     println!("{}", info);
-    loop {}
+    blog_os::hlt_loop();
 }
 
 // our panic handler in test mode
@@ -34,7 +34,7 @@ pub extern "C" fn _start() -> ! {
 
     println!("It did not crash!");
 
-    loop {}
+    blog_os::hlt_loop();
 }
 
 #[test_case]

@@ -14,8 +14,14 @@ pub mod vga_buffer;
 
 /// Initializes the OS library
 pub fn init() {
+    // Initialize the global descriptor table
     gdt::init();
+    // Load the interruption handlers
     interrupts::init_idt();
+    // Initialize the interrupt controllers
+    unsafe { interrupts::PICS.lock().initialize() };
+    // Enable interruptions
+    x86_64::instructions::interrupts::enable();
 }
 
 /// Trait called on test functions
@@ -47,7 +53,7 @@ pub fn test_panic_handler(info: &PanicInfo) -> ! {
     serial_println!("[failed]\n");
     serial_println!("Error: {}\n", info);
     exit_qemu(QemuExitCode::Failed);
-    loop {}
+    hlt_loop();
 }
 
 /// Entry point for `cargo test`
@@ -56,7 +62,7 @@ pub fn test_panic_handler(info: &PanicInfo) -> ! {
 pub extern "C" fn _start() -> ! {
     init(); // Initialize the OS
     test_main(); // Run the tests instead of the normal OS
-    loop {}
+    hlt_loop();
 }
 
 #[cfg(test)]
@@ -80,5 +86,13 @@ pub fn exit_qemu(exit_code: QemuExitCode) {
     unsafe {
         let mut port = Port::new(0xf4);
         port.write(exit_code as u32);
+    }
+}
+
+/// Loops forever without wasting energy
+pub fn hlt_loop() -> ! {
+    loop {
+        // Pauses processing with the HLT instruction
+        x86_64::instructions::hlt();
     }
 }
