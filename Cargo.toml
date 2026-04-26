@@ -32,3 +32,8 @@ test-timeout = 300      # Timeout in seconds until it reports tests that were st
 [[test]]
 name = "should_panic"
 harness = false
+
+# Stack overflow causes a double fault and we cannot continue after one, so no test harness
+[[test]]
+name = "stack_overflow"
+harness = false
